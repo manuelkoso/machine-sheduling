@@ -1,1 +1,1 @@
-# machine-sheduling
+# Machine sheduling
