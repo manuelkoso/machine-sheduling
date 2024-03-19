@@ -1,5 +1,4 @@
 from typing import Dict
-from itertools import islice
 from typing import List
 from src.Instance import Instance
 import numpy as np
@@ -38,10 +37,13 @@ class InstanceRetriever():
         
         if int(lines[initial_indexes["P"]][0]) != 0:
             instance.P = InstanceRetriever.__process_lines(lines[initial_indexes["P"] + 1 : initial_indexes["P"] + 1 + int(lines[initial_indexes["P"]][0])])
+        else:
+            instance.P = np.array([])
         initial_indexes["Q"] = initial_indexes["P"] + 1 + int(lines[initial_indexes["P"]][0]) 
         if int(lines[initial_indexes["Q"]][0]) != 0:
             instance.Q = InstanceRetriever.__process_lines(lines[initial_indexes["Q"] + 1 : initial_indexes["Q"] + 1 + int(lines[initial_indexes["Q"]][0])])
-        
+        else:
+            instance.Q = np.array([])
         return instance
 
     def __get_initial_indexes(self) -> Dict[str, int]:
