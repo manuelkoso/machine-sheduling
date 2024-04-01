@@ -190,6 +190,3 @@ class MachineScheduler:
                          for j in self.instance.J
                          for t in self.instance.T)    
         return model
-            
-    def build_cp_model(self):
-        pass
