@@ -22,61 +22,41 @@ class MachineScheduler:
                                             for t in self.instance.T 
                                                 if t in np.arange(self.instance.rj[j], self.instance.t_max - self.instance.pj[j] + 1)], 
                                             vtype=gp.GRB.BINARY)
-        lol = 0
         
-        lol = len(model.addConstrs(gp.quicksum(x_ijkt[i,j,k,t] 
+        model.addConstrs(gp.quicksum(x_ijkt[i,j,k,t] 
                             for i in self.instance.get_Mj(j)
                             for k in self.instance.get_Kij(i,j) 
                             for t in self.instance.T if (i,j,k,t) in x_ijkt.keys()) == 1 
-                            for j in self.instance.J))
-        print("c1")
-        print("expected: " + str(len(self.instance.J)))   
-        print("actual: " + str(lol))   
+                            for j in self.instance.J) 
                             
-        lol = len(model.addConstrs(gp.quicksum(x_ijkt[i,j,k,tau]
+        model.addConstrs(gp.quicksum(x_ijkt[i,j,k,tau]
                             for j in self.instance.J
                             for k in self.instance.get_Kij(i,j)
                             for tau in self.instance.get_Sjt(j,t)
                                 if (i,j,k,tau) in x_ijkt.keys()) <= 1
                             for i in self.instance.M
-                            for t in self.instance.T))
+                            for t in self.instance.T)
         
-        print("c2")
-        print("expected: " + str(len(self.instance.M) * len(self.instance.T)))   
-        print("actual: " + str(lol))   
-        
-        lol = len(model.addConstrs(gp.quicksum(self.instance.qj[j]*x_ijkt[i,j,k,tau]
+        model.addConstrs(gp.quicksum(self.instance.qj[j]*x_ijkt[i,j,k,tau]
                             for j in self.instance.J
                             for i in self.instance.get_Mj(j) if k in self.instance.get_Kij(i,j)
                             for tau in self.instance.get_Sjt(j,t)
                                 if (i,j,k,tau) in x_ijkt.keys()) <= self.instance.ukt[k,t]
                             for k in self.instance.K
                             for t in self.instance.T 
-                                if t != self.instance.t_max))
+                                if t != self.instance.t_max)
         
-        print("c3")
-        print("expected: " + str(len(self.instance.K) * (len(self.instance.T) - 1)))   
-        print("actual: " + str(lol))   
-        
-        lol = len(model.addConstrs(C[j] == gp.quicksum(x_ijkt[i,j,k,t] * (t + self.instance.pj[j])
+        model.addConstrs(C[j] == gp.quicksum(x_ijkt[i,j,k,t] * (t + self.instance.pj[j])
                             for i in self.instance.get_Mj(j)
                             for k in self.instance.get_Kij(i,j)
                             for t in self.instance.T
                                 if (i,j,k,t) in x_ijkt.keys())
-                            for j in self.instance.J))
+                            for j in self.instance.J)
         
-        print("c4")
-        print("expected: " + str(len(self.instance.J)))   
-        print("actual: " + str(lol))
-        
-        lol = len(model.addConstrs(C[l] - self.instance.pj[l] >= C[j]
-                            for j,l in self.instance.get_P_union_Q()))
+        model.addConstrs(C[l] - self.instance.pj[l] >= C[j]
+                            for j,l in self.instance.get_P_union_Q()) 
             
-        print("c5")
-        print("expected: " + str(len(self.instance.get_P_union_Q())))   
-        print("actual: " + str(lol))    
-            
-        lol = len(model.addConstrs(gp.quicksum(x_ijkt[i,j,k,t] 
+        model.addConstrs(gp.quicksum(x_ijkt[i,j,k,t] 
                             for k in self.instance.get_Kij(i,j)
                             for t in self.instance.T
                                 if (i,j,k,t) in x_ijkt.keys()) ==
@@ -85,13 +65,9 @@ class MachineScheduler:
                                 for t in self.instance.T
                                     if (i,l,k,t) in x_ijkt.keys())
                             for j,l in self.instance.Q
-                            for i in self.instance.get_Mj(j)))
+                            for i in self.instance.get_Mj(j)) 
         
-        print("c6")
-        print("expected: " + str(len([(j,l,i) for j,l in self.instance.Q for i in self.instance.get_Mj(j)])))   
-        print("actual: " + str(lol))   
-        
-        lol = len(model.addConstrs(gp.quicksum(x_ijkt[i,jp,k,t]
+        model.addConstrs(gp.quicksum(x_ijkt[i,jp,k,t]
                             for jp in self.instance.J if jp not in (j,l)
                             for k in self.instance.get_Kij(i,jp)
                                 if (i,jp,k,t) in x_ijkt.keys()) <= 1 -
@@ -105,17 +81,10 @@ class MachineScheduler:
                                             if (i,l,k,tau) in x_ijkt.keys())
                             for j,l in self.instance.Q
                             for i in self.instance.get_Mj(j)
-                            for t in self.instance.T))
+                            for t in self.instance.T)
 
-        print("c7")
-        print("expected: " + str(len([(j,l,i,t) for j,l in self.instance.Q for i in self.instance.get_Mj(j) for t in self.instance.T])))   
-        print("actual: " + str(lol))   
-
-        lol = len(model.addConstrs(T[j] >= C[j] - self.instance.dj[j]
-                            for j in self.instance.J))
-        print("c8")
-        print("expected: " + str(len(self.instance.J)))   
-        print("actual: " + str(lol)) 
+        model.addConstrs(T[j] >= C[j] - self.instance.dj[j]
+                            for j in self.instance.J)
             
         model.setObjective(gp.quicksum(T[j]*self.instance.wj[j] 
                             for j in self.instance.J), gp.GRB.MINIMIZE)

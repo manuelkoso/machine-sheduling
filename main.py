@@ -9,10 +9,10 @@ import time
 
 def main ():
 
-    par = [(200,20,10), (200,20,20)]
+    par = [(100,10,5)]
     modes = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
     
-    models = ["milp"]
+    models = ["milp+"]
     
     for t_model in models:
         for J,M,K in par:
@@ -20,7 +20,7 @@ def main ():
             results = pd.DataFrame()
             for mode in modes:
                 print(mode)
-                retriever = InstanceRetriever(path_file=".\\data\\TEST1-REALISTIC\\TEST1-" + str(J) + "-" + str(M) + "-" + str(K) + "-" + str(mode) + ".txt")
+                retriever = InstanceRetriever(path_file=".\\data\\TEST0-RANDOM\\TEST0-" + str(J) + "-" + str(M) + "-" + str(K) + "-" + str(mode) + ".txt")
                 instance = retriever.get_instance()
                 
                 try:
