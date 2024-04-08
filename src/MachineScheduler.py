@@ -2,29 +2,37 @@ from typing import Tuple
 
 import gurobipy as gp
 import numpy as np
+import logging
 from abc import ABC, abstractmethod
 
-from src.Instance import Instance
+from .Instance import Instance
 
 
 class MachineScheduler(ABC):
-    TIME_LIMIT = 3600
+    def __init__(self, instance: Instance) -> None:
+        self._instance = instance
+        self._model = gp.Model(str(self.__class__))
 
-    def __init__(self, instance: Instance, model_name: str) -> None:
-        self.instance = instance
-        self.model = gp.Model(model_name)
-        self.model.setParam("TimeLimit", self.TIME_LIMIT)
+    @property
+    def instance(self) -> Instance:
+        return self._instance
+
+    @property
+    def model(self) -> gp.Model:
+        return self._model
 
     @abstractmethod
     def build_model(self) -> None:
         pass
 
     def run(self) -> None:
+        logging.debug("Start model optimization")
         self.model.optimize()
 
 
 class MILP(MachineScheduler):
     def build_model(self) -> None:
+        logging.debug("MILP model building")
         T, C, x_ijkt = self.__get_variables()
         self.__set_constraints(T, C, x_ijkt)
         self.__set_objective(T)
@@ -112,7 +120,7 @@ class MILP(MachineScheduler):
 
 class MilpAdvanced(MachineScheduler):
     def build_model(self) -> None:
-        self.model.setParam("TimeLimit", self.TIME_LIMIT)
+        logging.debug("MILP Advanced model building")
         T, C, xm_ijt, xw_jkt = self.__get_variables()
         self.__set_constraints(T, C, xm_ijt, xw_jkt)
         self.__set_objective(T)
