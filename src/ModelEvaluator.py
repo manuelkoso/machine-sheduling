@@ -2,7 +2,7 @@ import json
 from typing import Dict, Any
 
 from .MachineScheduler import MachineScheduler
-from .InstanceMeta import SyntheticInstanceMeta
+from .InstanceMeta import SyntheticInstanceMeta, InstanceMeta
 from .InstanceRetriever import InstanceRetriever
 
 import pandas as pd
@@ -14,9 +14,9 @@ from src import Instance
 
 class ModelEvaluator:
     CONFIG_PATH = "src\\config\\evaluator.json"
-    RESULT_COLUMNS = ["instance_type", "number_of_jobs", "number_of_machines", "number_of_workers", "version",
-                      "optimum_reached", "T(s)", "T_opt(s)", "LP", "number_of_variables", "number_of_constraints",
-                      "nzs"]
+    RESULT_MODEL_COLUMNS = ["number_of_jobs", "number_of_machines", "number_of_workers",
+                            "optimum_reached", "T(s)", "T_opt(s)", "LP", "number_of_variables", "number_of_constraints",
+                            "nzs"]
     OUT_OF_MEMORY_DEFAULT_TIME = 3600
 
     def __init__(self, scheduler_class: MachineScheduler.__class__):
@@ -24,7 +24,7 @@ class ModelEvaluator:
 
     def evaluate_all_instances(self, instance_meta_class) -> pd.DataFrame:
         logging.debug("Start evaluation, instance type: " + str(instance_meta_class))
-        results = pd.DataFrame(columns=self.RESULT_COLUMNS)
+        results = pd.DataFrame()
 
         instances_params = self.__get_instances_params(instance_meta_class)
         versions = instances_params["versions"]
@@ -36,15 +36,19 @@ class ModelEvaluator:
         return results
 
     def evaluate_all_instance_version(self, instance_meta_class, versions, instance_params) -> pd.DataFrame:
-        results = pd.DataFrame(columns=self.RESULT_COLUMNS)
+        results = pd.DataFrame()
 
         for version in versions:
             instance_params["version"] = version
-            instance_meta = instance_meta_class(**instance_params)
+            instance_meta: InstanceMeta = instance_meta_class(**instance_params)
             logging.debug("Evaluation instance " + str(instance_meta))
 
             instance = InstanceRetriever.get_instance(instance_meta)
-            results = pd.concat([results, pd.DataFrame(self.evaluate_instance(instance), index=[0])], ignore_index=True)
+            instance_results = self.evaluate_instance(instance)
+            instance_results["version"] = version
+            instance_results["number_of_projects"] = instance_meta.get_params()[
+                "number_of_projects"] if instance_meta_class is not SyntheticInstanceMeta else None
+            results = pd.concat([results, pd.DataFrame(instance_results, index=[0])], ignore_index=True)
 
         return results
 
@@ -71,10 +75,10 @@ class ModelEvaluator:
                   scheduler.model.getAttr("NumConstrs"),
                   scheduler.model.getA().count_nonzero()]
 
-        return dict(zip(self.RESULT_COLUMNS, values))
+        return dict(zip(self.RESULT_MODEL_COLUMNS, values))
 
     def __out_of_memory_results(self):
-        values = [None] * len(self.RESULT_COLUMNS)
-        result = dict(zip(self.RESULT_COLUMNS, values))
+        values = [None] * len(self.RESULT_MODEL_COLUMNS)
+        result = dict(zip(self.RESULT_MODEL_COLUMNS, values))
         result["T(s)"] = self.OUT_OF_MEMORY_DEFAULT_TIME
         return result

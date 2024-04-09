@@ -13,6 +13,17 @@ class Instance:
         self.K = range(nworkers)
         self.T = range(time_horizon + 1)
         self.t_max = time_horizon
+        self._Q = None
+        self._P = None
+        self._ukt = None
+        self._wj = None
+        self._pj = None
+        self._qj = None
+        self._dj = None
+        self._rj = None
+        self._Ki = None
+        self._Kj = None
+        self._Mj = None
 
     @property
     def Mj(self) -> np.ndarray:
@@ -101,7 +112,7 @@ class Instance:
         if len(value) != len(self.J):
             raise ValueError("The number of elements must be equal to the number of jobs")
         if not np.all(np.isin(value, self.JOB_WEIGHTS)):
-            raise ValueError("The value of elements be an integer in the interval " + self.JOB_WEIGHTS)
+            raise ValueError("The value of elements be an integer in the interval " + str(self.JOB_WEIGHTS))
         self._wj = value
 
     @property
@@ -169,19 +180,19 @@ class Instance:
                 "The parameter i must be a machine, integer in the interval [0," + str(len(self.M) - 1) + "]")
         if j not in self.J:
             raise ValueError(
-                "The parameter j must be a job, an integer in the inetrval [0," + str(len(self.J) - 1) + "]")
+                "The parameter j must be a job, an integer in the interval [0," + str(len(self.J) - 1) + "]")
         return np.where(self._Ki[i] + self._Kj[j] > 1)[0]
 
     def get_Kj(self, j: int) -> np.array:
         if j not in self.J:
             raise ValueError(
-                "The parameter j must be a job, an integer in the inetrval [0," + str(len(self.J) - 1) + "]")
+                "The parameter j must be a job, an integer in the interval [0," + str(len(self.J) - 1) + "]")
         return np.where(self._Kj[j] == 1)[0]
 
     def get_Mj(self, j: int) -> np.array:
         if j not in self.J:
             raise ValueError(
-                "The parameter j must be a job, an integer in the inetrval [0," + str(len(self.J) - 1) + "]")
+                "The parameter j must be a job, an integer in the interval [0," + str(len(self.J) - 1) + "]")
         return np.where(self._Mj[j] == 1)[0]
 
     def get_Sjt(self, j: int, t: int) -> np.array:
@@ -189,10 +200,10 @@ class Instance:
             raise ValueError("The parameter t must be an integer in the interval [0," + str(self.t_max) + "]")
         if j not in self.J:
             raise ValueError(
-                "The parameter j must be a job, an integer in the inetrval [0," + str(len(self.J) - 1) + "]")
-        if (self._rj[j] > t):
+                "The parameter j must be a job, an integer in the interval [0," + str(len(self.J) - 1) + "]")
+        if self._rj[j] > t:
             return np.array([])
-        if t >= self._rj[j] and self._rj[j] >= t - self._pj[j] + 1:
+        if t >= self._rj[j] >= t - self._pj[j] + 1:
             return np.arange(self._rj[j], t + 1)
         return np.arange(t - self._pj[j] + 1, t + 1)
 
