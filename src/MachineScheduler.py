@@ -9,9 +9,12 @@ from .Instance import Instance
 
 
 class MachineScheduler(ABC):
+    TIME_LIMIT = 3600
+
     def __init__(self, instance: Instance) -> None:
         self._instance = instance
         self._model = gp.Model(str(self.__class__))
+        self.model.setParam("TimeLimit", self.TIME_LIMIT)
 
     @property
     def instance(self) -> Instance:
