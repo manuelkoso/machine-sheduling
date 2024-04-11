@@ -12,13 +12,8 @@ def main():
     logging.basicConfig(filename="log\\log", level=logging.DEBUG,
                         format="%(asctime)s %(levelname)s %(module)s %(name)s %(message)s")
     logging.debug("Start main execution")
-    evaluator = ModelEvaluator(MILPAdvanced)
-    results = evaluator.evaluate_all_instances(SyntheticInstanceMeta)
-
-    if os.path.isfile(OUTPUT_PATH):
-        results.to_csv(OUTPUT_PATH, mode='a', header=False)
-    else:
-        results.to_csv(OUTPUT_PATH)
+    evaluator = ModelEvaluator(MILPAdvanced, OUTPUT_PATH)
+    evaluator.evaluate_all_instances(SyntheticInstanceMeta)
 
 
 if __name__ == '__main__':

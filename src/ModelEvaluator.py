@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Dict, Any
 
 from .MachineScheduler import MachineScheduler
@@ -19,8 +20,9 @@ class ModelEvaluator:
                             "nzs"]
     OUT_OF_MEMORY_DEFAULT_TIME = 3600
 
-    def __init__(self, scheduler_class: MachineScheduler.__class__):
+    def __init__(self, scheduler_class: MachineScheduler.__class__, output_path: str = "results"):
         self.scheduler_class = scheduler_class
+        self.output_path = output_path
 
     def evaluate_all_instances(self, instance_meta_class) -> pd.DataFrame:
         logging.debug("Start evaluation, instance type: " + str(instance_meta_class))
@@ -32,8 +34,14 @@ class ModelEvaluator:
             results = pd.concat(
                 [results, self.evaluate_all_instance_version(instance_meta_class, versions, instance_params)],
                 ignore_index=True)
-
+            self.__save_current_results(results)
         return results
+
+    def __save_current_results(self, results: pd.DataFrame) -> None:
+        if os.path.isfile(self.output_path):
+            results.to_csv(self.output_path, mode='a', header=False)
+        else:
+            results.to_csv(self.output_path)
 
     def evaluate_all_instance_version(self, instance_meta_class, versions, instance_params) -> pd.DataFrame:
         results = pd.DataFrame()
