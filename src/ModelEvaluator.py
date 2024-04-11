@@ -59,7 +59,7 @@ class ModelEvaluator:
             scheduler.run()
             return self.__get_results_from_model(scheduler)
         except (MemoryError, gp.GurobiError):
-            return self.__out_of_memory_results()
+            return self.__out_of_memory_results(len(instance.J), len(instance.M), len(instance.K))
 
     def __get_instances_params(self, instance_meta_class):
         json_field = "synthetic" if instance_meta_class is SyntheticInstanceMeta else "real"
@@ -77,8 +77,11 @@ class ModelEvaluator:
 
         return dict(zip(self.RESULT_MODEL_COLUMNS, values))
 
-    def __out_of_memory_results(self):
+    def __out_of_memory_results(self, J: int, M: int, K: int) -> Dict[str, Any]:
         values = [None] * len(self.RESULT_MODEL_COLUMNS)
         result = dict(zip(self.RESULT_MODEL_COLUMNS, values))
         result["T(s)"] = self.OUT_OF_MEMORY_DEFAULT_TIME
+        result["J"] = J
+        result["M"] = M
+        result["K"] = K
         return result

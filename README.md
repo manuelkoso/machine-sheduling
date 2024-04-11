@@ -7,7 +7,7 @@ This repository contains the implementation of the two methods that use integer 
   * [Folder structure](#folder-structure)
   * [Data](#data)
   * [Configuration](#configuration)
-  * [Execution](#execution)
+  * [Setup and Execution](#setup-and-execution)
 <!-- TOC -->
 
 ## Folder structure
@@ -21,8 +21,6 @@ This repository contains the implementation of the two methods that use integer 
 
 ## Configuration
 
-## Execution
+## Setup and Execution
 
-In order to execute the default main file, which builds the MILP models and saves the results 
-of the optimization for all tha instances, do the following:
 

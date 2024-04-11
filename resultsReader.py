@@ -8,7 +8,6 @@ mode_opt_milp = milp_results.loc[milp_results["#opt"] == True]["mode"]
 mode_opt_milp_plus = milp_plus_results.loc[milp_plus_results["#opt"] == True]["mode"]
 
 opt_modes = pd.merge(mode_opt_milp, mode_opt_milp_plus)
-opt_modes = {}
 opt_modes["mode"] = mode_opt_milp
 print("************* milp *************")
 print(mean(milp_results.loc[milp_results["mode"].isin(opt_modes["mode"])]["#vars"]))

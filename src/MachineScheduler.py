@@ -121,7 +121,7 @@ class MILP(MachineScheduler):
                                             for j in self.instance.J), gp.GRB.MINIMIZE)
 
 
-class MilpAdvanced(MachineScheduler):
+class MILPAdvanced(MachineScheduler):
     def build_model(self) -> None:
         logging.debug("MILP Advanced model building")
         T, C, xm_ijt, xw_jkt = self.__get_variables()
