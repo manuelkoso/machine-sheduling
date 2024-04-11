@@ -4,7 +4,7 @@ from src.InstanceMeta import SyntheticInstanceMeta
 import os
 import logging
 
-OUTPUT_PATH = "output\\results.csv"
+OUTPUT_PATH = "results/results.csv"
 
 
 def main():

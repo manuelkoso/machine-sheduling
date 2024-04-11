@@ -41,8 +41,8 @@ class MILP(MachineScheduler):
         self.__set_objective(T)
 
     def __get_variables(self) -> Tuple:
-        T = self.model.addVars([(j) for j in self.instance.J], vtype=gp.GRB.CONTINUOUS)
-        C = self.model.addVars([(j) for j in self.instance.J], vtype=gp.GRB.CONTINUOUS)
+        T = self.model.addVars([j for j in self.instance.J], vtype=gp.GRB.CONTINUOUS)
+        C = self.model.addVars([j for j in self.instance.J], vtype=gp.GRB.CONTINUOUS)
         x_ijkt = self.model.addVars([(i, j, k, t) for j in self.instance.J
                                      for i in self.instance.get_Mj(j)
                                      for k in self.instance.get_Kij(i, j)
@@ -129,8 +129,8 @@ class MilpAdvanced(MachineScheduler):
         self.__set_objective(T)
 
     def __get_variables(self) -> Tuple:
-        T = self.model.addVars([(j) for j in self.instance.J], vtype=gp.GRB.CONTINUOUS)
-        C = self.model.addVars([(j) for j in self.instance.J], vtype=gp.GRB.CONTINUOUS)
+        T = self.model.addVars([j for j in self.instance.J], vtype=gp.GRB.CONTINUOUS)
+        C = self.model.addVars([j for j in self.instance.J], vtype=gp.GRB.CONTINUOUS)
         xm_ijt = self.model.addVars([(i, j, t) for j in self.instance.J
                                      for i in self.instance.get_Mj(j)
                                      for t in self.instance.T
