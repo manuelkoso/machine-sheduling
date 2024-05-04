@@ -14,9 +14,7 @@ This repository contains the implementation of the two methods that use integer 
 
 - `src`: code source folder
 - `data`: instances [shared](https://github.com/regor-unimore/Parallel-Machine-Scheduling-with-Contiguity) by the authors 
-- `output`: results obtained by the two models with different instances
-
-## Data
+- `output`: results obtained by the optimization process
 
 ## Setup and Execution
 
