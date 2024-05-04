@@ -42,5 +42,5 @@ This code snippet is also in the `main.py` file. In order to execute it, run the
 python main.py
 ```
 
-Notice that the execution will produce also a `log` folder containing a log
+Notice that the execution will also produce a `log` folder containing a log
 file of the execution.
