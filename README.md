@@ -29,7 +29,7 @@ pip install -r requirements.txt
 In the `src/config` folder there is `evaluator.json`, a config file where to specify
 which instances (see `data` folder) will be included in the optimization process.
 
-It follows a code snippet on how to start the optimization and obtain results for
+It follows a code snippet on how to run the optimization for
 synthetic instances (placed in the `data/random` folder) for both models.
 
 ```python
@@ -44,7 +44,7 @@ ModelEvaluator(scheduler_class=MILPAdvanced,
                    output_path="milp_plus.csv").evaluate_all_instances(SyntheticInstanceMeta)
 ```
 
-This code snippet is also in the `main.py` file. In order to execute it run
+This code snippet is also in the `main.py` file. In order to execute it, run the following command line:
 
 ```commandline
 python main.py
