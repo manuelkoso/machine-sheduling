@@ -24,7 +24,7 @@ which instances will be included in the optimization process.
 It follows a code snippet on how to run the optimization for
 synthetic instances (placed in the `data/random` folder) for both models. In order to 
 optimize real instances, replace the `evaluate_all_instances` method argument with 
-`RealInstanceMeta`
+`InstanceType.REAL`.
 
 ```python
 from src.ModelEvaluator import ModelEvaluator
@@ -32,9 +32,9 @@ from src.MachineScheduler import MILP, MILPAdvanced
 from src.enum.InstanceType import InstanceType
 
 ModelEvaluator(scheduler_class=MILP, 
-               output_path="output/realistic/milp_real.csv").evaluate_all_instances(InstanceType.SYNTHETIC)
+               output_path="milp.csv").evaluate_all_instances(InstanceType.SYNTHETIC)
 ModelEvaluator(scheduler_class=MILPAdvanced,
-               output_path="output/realistic/milp_plus_real.csv").evaluate_all_instances(InstanceType.SYNTHETIC)
+               output_path="milp_plus.csv").evaluate_all_instances(InstanceType.SYNTHETIC)
 ```
 
 This code snippet is also in the `main.py` file. In order to execute it, run the following command line:
