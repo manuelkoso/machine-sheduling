@@ -3,8 +3,9 @@ import os
 from typing import Dict, Any, List
 
 from .MachineScheduler import MachineScheduler
-from .InstanceMeta import SyntheticInstanceMeta, InstanceMeta
+from .InstanceMeta import SyntheticInstanceMeta, InstanceMeta, RealInstanceMeta
 from .InstanceRetriever import InstanceRetriever
+from .enum.InstanceType import InstanceType
 
 import pandas as pd
 import gurobipy as gp
@@ -24,11 +25,12 @@ class ModelEvaluator:
         self.scheduler_class = scheduler_class
         self.output_path = output_path
 
-    def evaluate_all_instances(self, instance_meta_class: InstanceMeta.__class__) -> pd.DataFrame:
-        logging.debug("Start evaluation, instance type: " + str(instance_meta_class))
+    def evaluate_all_instances(self, instance_type: InstanceType) -> pd.DataFrame:
+        logging.debug("Start evaluation, instance type: " + str(instance_type))
         results = pd.DataFrame()
 
-        instances_params = self.__get_instances_params(instance_meta_class)
+        instances_params = self.__get_instances_params(instance_type)
+        instance_meta_class = ModelEvaluator.__get_instance_meta_class(instance_type)
         versions = instances_params["versions"]
         for instance_params in instances_params["params"]:
             results = pd.concat(
@@ -70,8 +72,8 @@ class ModelEvaluator:
         except (MemoryError, gp.GurobiError):
             return self.__out_of_memory_results(len(instance.J), len(instance.M), len(instance.K))
 
-    def __get_instances_params(self, instance_meta_class: InstanceMeta):
-        json_field = "synthetic" if instance_meta_class is SyntheticInstanceMeta else "real"
+    def __get_instances_params(self, instance_type: InstanceType):
+        json_field = "synthetic" if instance_type is InstanceType.SYNTHETIC else "real"
         with open(self.CONFIG_PATH) as fp:
             return json.load(fp)[json_field]
 
@@ -94,3 +96,9 @@ class ModelEvaluator:
         result["number_of_machines"] = M
         result["number_of_workers"] = K
         return result
+
+    @staticmethod
+    def __get_instance_meta_class(instance_type: InstanceType) -> InstanceMeta.__class__:
+        if instance_type is InstanceType.SYNTHETIC:
+            return SyntheticInstanceMeta
+        return RealInstanceMeta
