@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from .MachineScheduler import MachineScheduler
 from .InstanceMeta import SyntheticInstanceMeta, InstanceMeta
@@ -24,7 +24,7 @@ class ModelEvaluator:
         self.scheduler_class = scheduler_class
         self.output_path = output_path
 
-    def evaluate_all_instances(self, instance_meta_class: InstanceMeta) -> pd.DataFrame:
+    def evaluate_all_instances(self, instance_meta_class: InstanceMeta.__class__) -> pd.DataFrame:
         logging.debug("Start evaluation, instance type: " + str(instance_meta_class))
         results = pd.DataFrame()
 
@@ -32,7 +32,7 @@ class ModelEvaluator:
         versions = instances_params["versions"]
         for instance_params in instances_params["params"]:
             results = pd.concat(
-                [results, self.evaluate_all_instance_version(instance_meta_class, versions, instance_params)],
+                [results, self.evaluate_all_instance_versions(instance_meta_class, versions, instance_params)],
                 ignore_index=True)
             self.__save_current_results(results)
         return results
@@ -43,7 +43,8 @@ class ModelEvaluator:
         else:
             results.to_csv(self.output_path)
 
-    def evaluate_all_instance_version(self, instance_meta_class, versions, instance_params) -> pd.DataFrame:
+    def evaluate_all_instance_versions(self, instance_meta_class: InstanceMeta.__class__, versions: List[Any],
+                                       instance_params: Dict[Any, Any]) -> pd.DataFrame:
         results = pd.DataFrame()
 
         for version in versions:

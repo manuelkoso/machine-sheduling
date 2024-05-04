@@ -10,8 +10,10 @@ def main():
                         format="%(asctime)s %(levelname)s %(module)s %(name)s %(message)s")
     logging.debug("Start main execution")
 
-    ModelEvaluator(scheduler_class=MILP, output_path="output/realistic/milp_real.csv").evaluate_all_instances(RealInstanceMeta)
-    ModelEvaluator(scheduler_class=MILPAdvanced, output_path="output/realistic/milp_plus_real.csv").evaluate_all_instances(RealInstanceMeta)
+    ModelEvaluator(scheduler_class=MILP, output_path="output/realistic/milp_real.csv").evaluate_all_instances(
+        RealInstanceMeta)
+    ModelEvaluator(scheduler_class=MILPAdvanced,
+                   output_path="output/realistic/milp_plus_real.csv").evaluate_all_instances(RealInstanceMeta)
 
 
 if __name__ == '__main__':
