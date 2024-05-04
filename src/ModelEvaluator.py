@@ -24,7 +24,7 @@ class ModelEvaluator:
         self.scheduler_class = scheduler_class
         self.output_path = output_path
 
-    def evaluate_all_instances(self, instance_meta_class) -> pd.DataFrame:
+    def evaluate_all_instances(self, instance_meta_class: InstanceMeta) -> pd.DataFrame:
         logging.debug("Start evaluation, instance type: " + str(instance_meta_class))
         results = pd.DataFrame()
 
@@ -69,7 +69,7 @@ class ModelEvaluator:
         except (MemoryError, gp.GurobiError):
             return self.__out_of_memory_results(len(instance.J), len(instance.M), len(instance.K))
 
-    def __get_instances_params(self, instance_meta_class):
+    def __get_instances_params(self, instance_meta_class: InstanceMeta):
         json_field = "synthetic" if instance_meta_class is SyntheticInstanceMeta else "real"
         with open(self.CONFIG_PATH) as fp:
             return json.load(fp)[json_field]
@@ -89,7 +89,7 @@ class ModelEvaluator:
         values = [None] * len(self.RESULT_MODEL_COLUMNS)
         result = dict(zip(self.RESULT_MODEL_COLUMNS, values))
         result["T(s)"] = self.OUT_OF_MEMORY_DEFAULT_TIME
-        result["J"] = J
-        result["M"] = M
-        result["K"] = K
+        result["number_of_jobs"] = J
+        result["number_of_machines"] = M
+        result["number_of_workers"] = K
         return result
