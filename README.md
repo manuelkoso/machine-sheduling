@@ -20,7 +20,7 @@ This repository contains the implementation of the two methods that use integer 
 
 ## Setup and Execution
 
-In order to install all the dependencies run:
+In order to install all the dependencies, run:
 
 ```commandline
 pip install -r requirements.txt
