@@ -22,7 +22,9 @@ In the `src/config` folder there is a `evaluator.json` file, where to specify
 which instances will be included in the optimization process.
 
 It follows a code snippet on how to run the optimization for
-synthetic instances (placed in the `data/random` folder) for both models.
+synthetic instances (placed in the `data/random` folder) for both models. In order to 
+optimize real instance, replace the `evaluate_all_instances` argument with 
+`RealInstanceMeta`
 
 ```python
 from src.ModelEvaluator import ModelEvaluator
