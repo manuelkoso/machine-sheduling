@@ -6,6 +6,8 @@ This repository contains the implementation of the integer linear programming mo
 
 - `src`: code source folder
 - `data`: instances [shared](https://github.com/regor-unimore/Parallel-Machine-Scheduling-with-Contiguity) by the authors 
+  - `random`: synthetic instances
+  - `real`: real instances
 - `output`: results obtained by the optimization process
 
 ## Setup and Execution
@@ -16,8 +18,8 @@ In order to install all the dependencies, run:
 pip install -r requirements.txt
 ```
 
-In the `src/config` folder there is `evaluator.json`, a config file where to specify
-which instances (see `data` folder) will be included in the optimization process.
+In the `src/config` folder there is a `evaluator.json` file, where to specify
+which instances will be included in the optimization process.
 
 It follows a code snippet on how to run the optimization for
 synthetic instances (placed in the `data/random` folder) for both models.
