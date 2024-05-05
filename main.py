@@ -3,9 +3,11 @@ import logging
 from src.ModelEvaluator import ModelEvaluator
 from src.MachineScheduler import MILP, MILPAdvanced
 from src.enum.InstanceType import InstanceType
+from pathlib import Path
 
 
 def main():
+    Path("log").mkdir(parents=True, exist_ok=True)
     logging.basicConfig(filename="log\\log", level=logging.DEBUG,
                         format="%(asctime)s %(levelname)s %(module)s %(name)s %(message)s")
     logging.debug("Start main execution")
